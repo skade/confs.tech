@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Link, Page, Layout, DisplayText} from '@shopify/polaris';
 
 import ConferenceList from '../ConferenceList';
+import AddConference from '../AddConference';
 import ConferenceFilter from '../ConferenceFilter';
 
 export default class App extends Component {
@@ -10,11 +11,16 @@ export default class App extends Component {
       date: 2017,
       type: 'javascript'
     },
+    showForm: true,
     conferences: []
   }
 
   componentDidMount() {
     this.loadConference();
+  }
+
+  showAddConferenceForm = () => {
+    this.setState({showForm: true})
   }
 
   loadConference = () => {
@@ -24,7 +30,7 @@ export default class App extends Component {
       .then( (result) => result.json())
       .then( (conferences) => {
         this.setState({conferences});
-      });
+      })
   }
 
   handleDateChange = (date) => {
@@ -55,7 +61,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {conferences, filters: {date}} = this.state;
+    const {showForm, conferences, filters: {date}} = this.state;
 
     return (
       <Page>
@@ -72,12 +78,7 @@ export default class App extends Component {
             />
           </Layout.Section>
           <Layout.Section>
-            <Link
-              url="https://github.com/nimzco/the-conference-list/issues/new"
-              external
-            >
-              Add a conference
-            </Link>
+            {showForm ? <AddConference /> : <Link onClick={this.showAddConferenceForm}>Add a conference</Link>}
           </Layout.Section>
           <Layout.Section>
             {this.showDuplicates(conferences)}
